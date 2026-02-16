@@ -12,13 +12,17 @@ import {
 } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
 import { GameContext } from "../context/GameContext";
+import { WishlistContext } from "../context/WishlistContext";
+import { CartContext } from "../context/CartContext";
 
 const Navbar = () => {
   const { currentUser } = useContext(AuthContext);
   const { games } = useContext(GameContext);
+  const { wishlistItems } = useContext(WishlistContext);
+  const { cartItems } = useContext(CartContext);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
-  const navigate = useNavigate(); // ✅ define navigate here
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     const value = e.target.value;
@@ -35,14 +39,22 @@ const Navbar = () => {
     setResults(filtered);
   };
 
+  // ✅ Helper to get initials
+  const getInitials = (user) => {
+    if (!user) return "";
+    if (user.name) {
+      return user.name
+        .split(" ")
+        .map((n) => n[0].toUpperCase())
+        .join("");
+    }
+    return user.email ? user.email[0].toUpperCase() : "";
+  };
+
   return (
     <nav className="navbar">
       <Link to="/">
-        <img
-          src="/images/Epic_Games.png"
-          alt="Logo"
-          className="nav-logo"
-        />
+        <img src="/images/Epic_Games.png" alt="Logo" className="nav-logo" />
       </Link>
 
       <div className="nav-center">
@@ -54,8 +66,6 @@ const Navbar = () => {
             value={query}
             onChange={handleSearch}
           />
-
-          {/* ✅ Dropdown results */}
           {results.length > 0 && (
             <div className="search-dropdown">
               {results.map((game) => (
@@ -63,7 +73,7 @@ const Navbar = () => {
                   key={game.id}
                   className="search-item"
                   onClick={() => {
-                    navigate(`/game/${game.id}`); // ✅ works now
+                    navigate(`/game/${game.id}`);
                     setQuery("");
                     setResults([]);
                   }}
@@ -79,9 +89,22 @@ const Navbar = () => {
       </div>
 
       <div className="nav-right">
-        <Link to="/wishlist" className="nav-icon"><FaHeart /></Link>
+        <Link to="/wishlist" className="nav-icon">
+          <FaHeart />
+          {wishlistItems.length > 0 && (
+            <span className="badge">{wishlistItems.length}</span>
+          )}
+        </Link>
+
         <Link to="/gift" className="nav-icon"><FaGift /></Link>
-        <Link to="/cart" className="nav-icon"><FaShoppingCart /></Link>
+
+        <Link to="/cart" className="nav-icon">
+          <FaShoppingCart />
+          {cartItems.length > 0 && (
+            <span className="badge">{cartItems.length}</span>
+          )}
+        </Link>
+
         <Link to="/library" className="nav-icon"><FaBook /></Link>
 
         {currentUser?.role === "admin" && (
@@ -93,9 +116,14 @@ const Navbar = () => {
             <FaUser />
           </Link>
         ) : (
-          <Link to="/logout" className="nav-icon" title="Logout">
-            <FaSignOutAlt />
-          </Link>
+          <>
+            <div className="user-badge" title={currentUser.email}>
+              {getInitials(currentUser)}
+            </div>
+            <Link to="/logout" className="nav-icon" title="Logout">
+              <FaSignOutAlt />
+            </Link>
+          </>
         )}
       </div>
     </nav>

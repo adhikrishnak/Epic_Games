@@ -3,17 +3,48 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // ✅ Load users from localStorage
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem("users");
-    return saved ? JSON.parse(saved) : [];
+    let parsed = saved ? JSON.parse(saved) : [];
+
+    // ✅ Ensure admin exists in users
+    if (!parsed.find((u) => u.email === "epicgames@epic.com")) {
+      parsed.push({
+        email: "epicgames@epic.com",
+        password: "epic123",
+        role: "admin",
+        cart: [],
+        library: [],
+        wishlist: [],
+        gifts: [],
+      });
+    }
+
+    return parsed;
   });
 
-  const [currentUser, setCurrentUser] = useState(null);
+  // ✅ Load currentUser from localStorage
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedUser = localStorage.getItem("currentUser");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
+  // ✅ Persist users
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
 
+  // ✅ Persist currentUser
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem("currentUser");
+    }
+  }, [currentUser]);
+
+  // ✅ Signup
   const signup = (newUser) => {
     const userWithData = {
       ...newUser,
@@ -27,22 +58,8 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(userWithData);
   };
 
+  // ✅ Login
   const login = (email, password) => {
-    // ✅ Hardcoded admin
-    if (email === "epicgames@epic.com" && password === "epic123") {
-      const adminUser = {
-        email,
-        role: "admin",
-        cart: [],
-        library: [],
-        wishlist: [],
-        gifts: [],
-      };
-      setCurrentUser(adminUser);
-      return true;
-    }
-
-    // ✅ Normal user
     const user = users.find(
       (u) => u.email === email && u.password === password
     );
@@ -53,11 +70,13 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
 
+  // ✅ Logout
   const logout = () => {
-  setCurrentUser(null);
-  localStorage.removeItem("cart");
-};
+    setCurrentUser(null);
+    localStorage.removeItem("currentUser");
+  };
 
+  // ✅ Update user data
   const updateUserData = (updatedUser) => {
     setUsers((prev) =>
       prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
@@ -66,8 +85,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ users, currentUser, signup, login, logout, updateUserData, setUsers, setCurrentUser }}>
-  {children}
-</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        users,
+        currentUser,
+        signup,
+        login,
+        logout,
+        updateUserData,
+        setUsers,
+        setCurrentUser,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };

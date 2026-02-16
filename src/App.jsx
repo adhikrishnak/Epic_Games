@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import Browse from "./pages/Browse";
@@ -13,6 +14,9 @@ import Wishlist from "./pages/Wishlist";
 import Gift from "./pages/Gift";
 import Logout from "./pages/Logout";
 
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Refund from "./pages/Refund";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedAdmin from "./components/ProtectedAdmin";
@@ -75,7 +79,7 @@ const App = () => {
                 }
               />
 
-              {/* ✅ New Pages */}
+              {/* User Features */}
               <Route
                 path="/wishlist"
                 element={
@@ -94,7 +98,14 @@ const App = () => {
               />
               <Route path="/logout" element={<Logout />} />
 
+              {/* ✅ Policy Pages */}
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/refund" element={<Refund />} />
             </Routes>
+
+            {/* ✅ Footer always visible */}
+            <Footer />
           </GiftProvider>
         </WishlistProvider>
       </CartProvider>

@@ -6,8 +6,10 @@ export const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const { currentUser, setUsers, setCurrentUser } = useContext(AuthContext);
 
+  // ✅ Add to wishlist
   const addToWishlist = (game) => {
     if (!currentUser) return;
+
     const updatedWishlist = [...(currentUser.wishlist || []), game];
     const updatedUser = { ...currentUser, wishlist: updatedWishlist };
 
@@ -17,9 +19,13 @@ export const WishlistProvider = ({ children }) => {
     setCurrentUser(updatedUser);
   };
 
+  // ✅ Remove from wishlist
   const removeFromWishlist = (id) => {
     if (!currentUser) return;
-    const updatedWishlist = (currentUser.wishlist || []).filter((g) => g.id !== id);
+
+    const updatedWishlist = (currentUser.wishlist || []).filter(
+      (g) => g.id !== id
+    );
     const updatedUser = { ...currentUser, wishlist: updatedWishlist };
 
     setUsers((prev) =>

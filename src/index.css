@@ -721,7 +721,7 @@ form button {
   color: #fff;
   padding: 12px 24px;
   margin-right: 10px;
-  backdrop-filter: blur(6px);
+  
   transition: 0.3s;
 }
 
@@ -810,7 +810,7 @@ form button {
   color: #fff;
   padding: 12px 24px;
   margin-right: 10px;
-  backdrop-filter: blur(6px);
+  
   transition: 0.3s;
 }
 
@@ -1414,4 +1414,325 @@ form button {
 
 .search-item:hover {
   background: #333;
+}
+.nav-icon {
+  position: relative;
+  margin: 0 10px;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #1260d4;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 6px;
+}
+.user-badge {
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.policy-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.policy-page h1 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.policy-page section {
+  margin-bottom: 20px;
+}
+
+.policy-page h2 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.policy-page p {
+  line-height: 1.6;
+}
+.footer {
+  background: #111;
+  color: #ccc;
+  padding: 40px 20px;
+  font-size: 0.9rem;
+}
+
+.footer-sections {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.footer-column {
+  flex: 1 1 150px;
+  margin: 10px;
+  transition: transform 0.3s ease;
+}
+
+.footer-column:hover {
+  transform: translateY(-5px);
+}
+
+.footer-column h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column li,
+.footer-column a {
+  color: #ccc;
+  text-decoration: none;
+  margin: 6px 0;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.footer-column li:hover,
+.footer-column a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  text-align: center;
+  color: #777;
+}
+
+.footer-bottom a {
+  color: #ccc;
+  text-decoration: none;
+  margin: 0 5px;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom a:hover {
+  color: #fff;
+}
+
+/* Hero container */
+.hero-banner {
+  position: relative;
+  padding: 80px 40px;
+  color: #fff;
+  background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3)),
+              url("/images/hero-bg.jpg") center/cover no-repeat;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Title */
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 2rem;              /* smaller headline */
+  margin-bottom: 12px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+  animation: slideDown 0.8s ease;
+}
+
+/* Detail text */
+.hero-detail {
+  font-size: 0.95rem;           /* compact body text */
+  line-height: 1.6;
+  margin: 15px 0 20px;
+  color: #ddd;
+  animation: fadeInUp 1s ease;
+}
+
+/* Buttons */
+.hero-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid #fff;
+  color: #fff;
+  font-size: 0.85rem;           /* smaller text */
+  padding: 8px 16px;            /* compact size */
+  margin-right: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero-buttons button:hover {
+  background: #fff;
+  color: #000;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.hero-buttons button:active {
+  transform: scale(0.98);
+}
+
+/* Navigation dots/arrows */
+.hero-nav {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.hero-nav button {
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  padding: 8px;                 /* smaller nav buttons */
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.hero-nav button:hover {
+  background: rgba(255,255,255,0.8);
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+
+
+/* Shared page styling */
+.epic-page {
+  background: #111;            /* dark background */
+  color: #fff;                 /* white text */
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.epic-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+/* Grid layout */
+.epic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Card styling */
+.epic-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.epic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.epic-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-bottom: 1px solid #333;
+}
+
+.epic-card-info {
+  padding: 15px;
+}
+
+.epic-card-info h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: #fff;
+}
+
+.epic-card-info p {
+  font-size: 0.9rem;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+/* Buttons */
+.epic-btn {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.epic-btn.secondary {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid #fff;
+  color: #fff;
+}
+
+.epic-btn.secondary:hover {
+  background: #fff;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* Empty state */
+.empty-wishlist,
+.empty-gift {
+  text-align: center;
+  color: #aaa;
+  font-size: 1rem;
+  margin-top: 40px;
 }
