@@ -1,5 +1,41 @@
-[
+﻿[
     {
+        "_id": "69b8320a2fd035cccc253435",
+        "title": "Rocket League",
+        "tagline": "",
+        "rating": "4.1",
+        "tags": [
+            "sports",
+            "action"
+        ],
+        "price": 0,
+        "image": "https://i.redd.it/tjhex9ba2umc1.jpeg",
+        "banner": "https://www.nintendo.com/eu/media/images/10_share_images/games_15/nintendo_switch_download_software_1/2x1_NSwitchDS_RocketLeague_S16.jpg",
+        "description": "Rocket League is a high-powered, physics-based \"vehicular soccer\" video game developed by Psyonix.",
+        "developer": "Psyonix",
+        "publisher": "Epic Games",
+        "release": "7 July 2015",
+        "featured": true
+    },
+    {
+        "_id": "69b8313c2fd035cccc253433",
+        "title": "Fall Guys: Ultimate Knockout",
+        "tagline": "",
+        "rating": "3.9",
+        "tags": [
+            "party royale"
+        ],
+        "price": 0,
+        "image": "https://cdn1.epicgames.com/offer/50118b7f954e450f8823df1614b24e80/FGSS04_KeyArt_OfferImagePortrait_1200x1600_1200x1600-4bd46574e78464352e1f2c55714701f7",
+        "banner": "https://assets.nintendo.com/image/upload/q_auto/f_auto/store/software/switch/70010000042975/937afd0c84319831009b44c93369faf0a2c926a454809f73523df9bfb6cf6233",
+        "description": "Fall Guys is a free-to-play, cross-platform battle royale party game.",
+        "developer": "Mediatonic",
+        "publisher": "Epic Games",
+        "release": "4 August 2020",
+        "featured": true
+    },
+    {
+        "_id": "69b82e572fd035cccc25342d",
         "title": "Fortnite",
         "tagline": "",
         "rating": "4.0",
@@ -12,57 +48,119 @@
         "image": "https://static0.polygonimages.com/wordpress/wp-content/uploads/sharedimages/2025/09/fortnite-tag-page-cover-art.jpg",
         "banner": "https://cdn1.epicgames.com/offer/fn/FNBR_39-00_C7S1_EGS_Launcher_DarkVoyager_FN_Blade_2560x1440_2560x1440-5ec6c25a339c465fa7312d92abfedeb8",
         "description": "Fortnite is a massively popular, free-to-play, third-person battle royale game developed by Epic Games.",
-        "developer": "Epic Games",
+        "developer": "Unreal Engine",
         "publisher": "Epic Games",
-        "release": "21 July 2017"
+        "release": "21 July 2017",
+        "featured": true
     },
     {
-        "title": "Rocket League",
-        "tagline": "",
-        "rating": "4.5",
-        "tags": [
-            "racing",
-            "sports",
-            "multiplayer"
-        ],
-        "price": 0,
-        "image": "https://cdn1.epicgames.com/offer/9773aa1aaade4f0baa8641ad09559ef0/EGS_RocketLeague_Psyonix_S1_1200x1600-47863544d6c464352e1f2c55714701f7",
-        "banner": "https://cdn1.epicgames.com/offer/9773aa1aaade4f0baa8641ad09559ef0/EGST_RocketLeagueS12_Psyonix_S1_2560x1440-47863544d6c464352e1f2c55714701f7",
-        "description": "Rocket League is a high-powered hybrid of arcade-style soccer and vehicular mayhem.",
-        "developer": "Psyonix",
-        "publisher": "Epic Games",
-        "release": "7 July 2015"
-    },
-    {
-        "title": "Fall Guys",
-        "tagline": "",
-        "rating": "3.9",
-        "tags": [
-            "party",
-            "battle royale"
-        ],
-        "price": 0,
-        "image": "https://cdn1.epicgames.com/offer/50118b7f954e450f8823df1614b24e80/FGSS04_KeyArt_OfferImagePortrait_1200x1600_1200x1600-4bd46574e78464352e1f2c55714701f7",
-        "banner": "https://assets.nintendo.com/image/upload/q_auto/f_auto/store/software/switch/70010000042975/937afd0c84319831009b44c93369faf0a2c926a454809f73523df9bfb6cf6233",
-        "description": "Fall Guys is a free-to-play, cross-platform battle royale party game.",
-        "developer": "Mediatonic",
-        "publisher": "Epic Games",
-        "release": "4 August 2020"
-    },
-    {
-        "title": "Grand Theft Auto V",
+        "_id": "69b82c992fd035cccc25342a",
+        "title": "Grand Theft Auto V: Premium ",
         "tagline": "",
         "rating": "4.9",
         "tags": [
-            "Open-world",
-            "Action"
+            "Open-world sandbox",
+            "Third-person shooter",
+            "First-person shooter"
         ],
         "price": 2499,
         "image": "https://gamerspotstorage01.s3.ap-south-1.amazonaws.com/wp-content/uploads/2023/05/23134358/GTAV.jpg",
         "banner": "https://cdn1.epicgames.com/offer/b0cd075465c44f87be3b505ac04a2e46/EGS_GrandTheftAutoVEnhanced_RockstarNorth_S1_2560x1440-906d8ae76a91aafc60b1a54c23fab496",
-        "description": "Grand Theft Auto V for PC offers players the option to explore the award-winning world of Los Santos and Blaine County.",
+        "description": "Grand Theft Auto V is a critically acclaimed 2013 action-adventure game by Rockstar Games.",
         "developer": "Rockstar North",
         "publisher": "Rockstar Games",
-        "release": "14 April 2015"
+        "release": "17 September 2013",
+        "featured": true
+    },
+    {
+        "_id": "69b820792fd035cccc25341f",
+        "title": "Marvel’s Spider-Man Remastered",
+        "tagline": "",
+        "rating": "4.7",
+        "tags": [
+            "Action",
+            "Adventure"
+        ],
+        "price": 3999,
+        "image": "https://image.api.playstation.com/vulcan/ap/rnd/202009/3021/BtsjAgHT9pqHRXtN9FCk7xc8.png",
+        "banner": "https://cdn1.epicgames.com/offer/4bc43145bb8245a5b5cc9ea262ffbe0e/EGS_MarvelsSpiderManRemastered_InsomniacGamesNixxesSoftware_S1_2560x1440-73702d11161b29a0b7c40a8b489b1808",
+        "description": "Marvel's Spider-Man Remastered is an enhanced, action-packed open-world game.",
+        "developer": "Insomniac Games",
+        "publisher": "PlayStation Publishing LLC",
+        "release": "12 August 2022",
+        "featured": true
+    },
+    {
+        "_id": "69b80ad6e27ccba192b183fa",
+        "title": "Assassin's Creed Valhalla",
+        "tagline": "",
+        "rating": "4.6",
+        "tags": [
+            "Open-world",
+            "Action",
+            "Role-playing game"
+        ],
+        "price": 750,
+        "image": "https://m.media-amazon.com/images/I/61MxfBV-xDL._AC_UF894,1000_QL80_.jpg",
+        "banner": "https://image.api.playstation.com/vulcan/img/rnd/202010/3023/PnqfxnHGmf9E826ECuEM9niQ.jpg",
+        "description": "Assassin's Creed Valhalla is a 2020 action RPG by Ubisoft.",
+        "developer": "Ubisoft Montreal",
+        "publisher": "Ubisoft ",
+        "release": "10 November 2020",
+        "featured": true
+    },
+    {
+        "_id": "69b806335b5482cb041b9fb3",
+        "title": "Black Ops 6",
+        "tagline": "Tactical shooter with stealth mechanics.",
+        "rating": "4.3",
+        "tags": [
+            "Multiplayer",
+            "Shooter"
+        ],
+        "price": 1499,
+        "image": "/images/shadow.jpg",
+        "banner": "/images/blackops-banner.jpg",
+        "description": "Engage in covert missions with advanced weaponry and tactical gameplay.",
+        "developer": "Activision",
+        "publisher": "Activision",
+        "release": "Dec 2025",
+        "featured": false
+    },
+    {
+        "_id": "69b806335b5482cb041b9fb4",
+        "title": "Forza Horizon 5",
+        "tagline": "High-octane racing experience.",
+        "rating": "4.8",
+        "tags": [
+            "Racing",
+            "Open World"
+        ],
+        "price": 999,
+        "image": "/images/forza5.jpg",
+        "banner": "/images/forza-banner.jpg",
+        "description": "Race across stunning landscapes with realistic physics and dynamic weather.",
+        "developer": "Playground Games",
+        "publisher": "Xbox Game Studios",
+        "release": "Nov 2025",
+        "featured": true
+    },
+    {
+        "_id": "69b806335b5482cb041b9fb2",
+        "title": "Genshin Impact",
+        "tagline": "A futuristic open-world RPG.",
+        "rating": "4.6",
+        "tags": [
+            "Character Customization",
+            "Great for Beginners"
+        ],
+        "price": 0,
+        "image": "https://store-images.s-microsoft.com/image/apps.6056.14057893183113088.fe9aa8d9-0f2f-4ec3-bdf1-9a1e9a2c0e21.e83084f2-24d0-463a-833f-93b5ec8da7fc",
+        "banner": "/images/genshin-banner.jpg",
+        "description": "Explore Teyvat with Zibai and Columbina in this massive update.",
+        "developer": "miHoYo",
+        "publisher": "miHoYo",
+        "release": "Jan 2026",
+        "featured": true
     }
 ]
