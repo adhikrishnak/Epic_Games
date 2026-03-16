@@ -2,31 +2,34 @@ import { createContext, useState, useEffect } from "react";
 
 export const GameContext = createContext();
 
-const API_URL = "/api/games";
+const API_PATH = "/api/games";
+// ✅ Dynamic API URL: Use VITE_API_URL from Vercel/Dashbord in production
+const BASE_URL = import.meta.env.VITE_API_URL || "";
+
+const API_URL = `${BASE_URL}${API_PATH}`;
 
 export const GameProvider = ({ children }) => {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch all games from backend on mount
+  // ✅ Fetch from Backend
   useEffect(() => {
     fetchGames();
   }, []);
 
   const fetchGames = async () => {
     try {
-      // Fetch from local static JSON instead of API
-      const res = await fetch("/games.json");
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
 
-      // Add 'id' field if it doesn't exist (using index or title as fallback)
-      const mapped = data.map((g, idx) => ({
+      const mapped = data.map((g) => ({
         ...g,
-        id: g._id || g.id || `game-${idx}`
+        id: g._id || g.id
       }));
       setGames(mapped);
     } catch (err) {
-      console.error("Failed to fetch games from JSON:", err);
+      console.error("Failed to fetch games from API:", err);
     } finally {
       setLoading(false);
     }
@@ -34,26 +37,46 @@ export const GameProvider = ({ children }) => {
 
   const addGame = async (game) => {
     try {
-      // In static mode, we just update local state
-      const newGame = {
-        ...game,
-        id: `game-${Date.now()}`,
-        price: Number(game.price) || 0
-      };
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...game,
+          price: Number(game.price) || 0
+        }),
+      });
+      const saved = await res.json();
+      const newGame = { ...saved, id: saved._id };
       setGames((prev) => [newGame, ...prev]);
     } catch (err) {
-      console.error("Failed to add game locally:", err);
+      console.error("Failed to add game to database:", err);
     }
   };
 
   const updateGame = async (id, updatedData) => {
-    setGames((prev) =>
-      prev.map((g) => (g.id === id ? { ...g, ...updatedData } : g))
-    );
+    try {
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+      const updated = await res.json();
+      const mappedGame = { ...updated, id: updated._id };
+      setGames((prev) =>
+        prev.map((g) => (g.id === id ? mappedGame : g))
+      );
+    } catch (err) {
+      console.error("Failed to update game in database:", err);
+    }
   };
 
   const deleteGame = async (id) => {
-    setGames((prev) => prev.filter((g) => g.id !== id));
+    try {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      setGames((prev) => prev.filter((g) => g.id !== id));
+    } catch (err) {
+      console.error("Failed to delete game from database:", err);
+    }
   };
 
   // Search helper for Navbar
