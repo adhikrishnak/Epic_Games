@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { WishlistContext } from "../context/WishlistContext";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const Wishlist = () => {
   const { wishlistItems, removeFromWishlist } = useContext(WishlistContext);
+  const navigate = useNavigate();
 
   if (!wishlistItems || wishlistItems.length === 0) {
     return (
@@ -22,6 +24,7 @@ const Wishlist = () => {
           <motion.div
             key={`${game.id}-${index}`} // ✅ unique key
             className="epic-card"
+            onClick={() => navigate(`/game/${game.id}`)}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
@@ -29,10 +32,13 @@ const Wishlist = () => {
             <img src={game.image} alt={game.title} />
             <div className="epic-card-info">
               <h3>{game.title}</h3>
-              <p>₹{game.price}</p>
+              <p>{!game.price || game.price === 0 ? "Free" : `₹${game.price}`}</p>
               <button
                 className="epic-btn secondary"
-                onClick={() => removeFromWishlist(game.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeFromWishlist(game.id);
+                }}
               >
                 Remove
               </button>

@@ -21,14 +21,16 @@ const AdminDashboard = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!form.title || !form.price) {
-      alert("Title and price are required!");
+    const isFree = String(form.price).toLowerCase() === "free" || Number(form.price) === 0;
+
+    if (!form.title || (form.price === "" && form.price !== 0)) {
+      alert("Title and price are required! (Enter 0 or 'Free' for free games)");
       return;
     }
 
     const payload = {
       ...form,
-      price: Number(form.price) || 0,
+      price: isFree ? 0 : Number(form.price) || 0,
       tags: typeof form.tags === "string" ? form.tags.split(",").map(t => t.trim()).filter(t => t) : form.tags,
     };
 
@@ -77,8 +79,8 @@ const AdminDashboard = () => {
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
         <input
-          type="number"
-          placeholder="Price"
+          type="text"
+          placeholder="Price (e.g., 1499 or Free)"
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
         />

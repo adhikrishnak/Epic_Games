@@ -44,7 +44,7 @@ const GameDetails = () => {
               toast.success(`${game.title} added to cart!`);
             }}
           >
-            Add to Cart ₹{game.price}
+            Add to Cart {!game.price || game.price === 0 ? "(Free)" : `₹${game.price}`}
           </motion.button>
 
           <motion.button

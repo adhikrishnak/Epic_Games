@@ -84,6 +84,18 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(updatedUser);
   };
 
+  // ✅ Remove from library
+  const removeFromLibrary = (id) => {
+    if (!currentUser) return;
+    const updatedLibrary = (currentUser.library || []).filter((g) => g.id !== id);
+    const updatedUser = { ...currentUser, library: updatedLibrary };
+
+    setUsers((prev) =>
+      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
+    );
+    setCurrentUser(updatedUser);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -95,6 +107,7 @@ export const AuthProvider = ({ children }) => {
         updateUserData,
         setUsers,
         setCurrentUser,
+        removeFromLibrary,
       }}
     >
       {children}

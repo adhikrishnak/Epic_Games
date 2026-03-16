@@ -2,13 +2,16 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { GameContext } from "../context/GameContext";
+import { WishlistContext } from "../context/WishlistContext";
 import { motion } from "framer-motion";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const { games } = useContext(GameContext);
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
+  const { addToWishlist } = useContext(WishlistContext);
 
   const [index, setIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -59,9 +62,7 @@ const Home = () => {
             className="hero-text"
           >
             <h1 className="hero-title">{game.title}</h1>
-            <p className="hero-subtitle">MAJOR UPDATE — {game.release}</p>
 
-            {/* ✅ Description with See More */}
             <p className="hero-detail">
               {expanded
                 ? game.description
@@ -76,12 +77,21 @@ const Home = () => {
               </button>
             )}
 
+            <div className="hero-price-label">
+              {!game.price || game.price === 0 ? "Free" : `₹${game.price}`}
+            </div>
+
             <div className="hero-buttons">
-              <button onClick={() => navigate(`/game/${game.id}`)}>
-                Play For Free
+              <button className="primary" onClick={() => navigate(`/game/${game.id}`)}>
+                {!game.price || game.price === 0 ? "Play For Free" : `Buy Now`}
               </button>
-              <button className="secondary" onClick={() => addToCart(game)}>
-                Add to Cart ₹{game.price}
+              <button className="wishlist" onClick={() => {
+                addToWishlist(game);
+                toast.success(`${game.title} added to wishlist!`);
+              }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"></path>
+                </svg>
               </button>
             </div>
           </motion.div>
@@ -107,7 +117,7 @@ const Home = () => {
               <img src={g.image} alt={g.title} />
               <div>
                 <h3>{g.title}</h3>
-                <span>₹{g.price}</span>
+                <span>{!g.price || g.price === 0 ? "Free" : `₹${g.price}`}</span>
               </div>
             </div>
           ))}

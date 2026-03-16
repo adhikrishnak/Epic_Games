@@ -39,7 +39,7 @@ const Browse = () => {
             <img src={game.image} alt={game.title} />
             <div>
               <h3>{game.title}</h3>
-              <span>₹{game.price}</span>
+              <span>{!game.price || game.price === 0 ? "Free" : `₹${game.price}`}</span>
             </div>
           </div>
         ))}
