@@ -4,28 +4,28 @@ import { AuthContext } from "./AuthContext";
 export const GiftContext = createContext();
 
 export const GiftProvider = ({ children }) => {
-  const { currentUser, setUsers, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, refreshUser } = useContext(AuthContext);
 
-  const addGift = (gift) => {
+  const addGift = async (game) => {
     if (!currentUser) return;
-    const updatedGifts = [...(currentUser.gifts || []), gift];
-    const updatedUser = { ...currentUser, gifts: updatedGifts };
-
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
+    try {
+      const resp = await fetch("/api/users/gifts/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: currentUser.email, gameId: game._id || game.id }),
+      });
+      if (resp.ok) {
+        await refreshUser();
+      }
+    } catch (err) {
+      console.error("Gift error:", err);
+    }
   };
 
-  const removeGift = (id) => {
+  const removeGift = async (id) => {
     if (!currentUser) return;
-    const updatedGifts = (currentUser.gifts || []).filter((g) => g.id !== id);
-    const updatedUser = { ...currentUser, gifts: updatedGifts };
-
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
+    // For now, removing a gift could be similar to removing from cart
+    // But usually gifts are managed in the send-to-friend flow
   };
 
   return (

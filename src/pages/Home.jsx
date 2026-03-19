@@ -3,123 +3,100 @@ import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { GameContext } from "../context/GameContext";
 import { WishlistContext } from "../context/WishlistContext";
-import { motion } from "framer-motion";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
+import GameCard from "../components/GameCard";
 
 const Home = () => {
-  const { games } = useContext(GameContext);
+  const { games, loading } = useContext(GameContext);
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
-  const { addToWishlist } = useContext(WishlistContext);
 
-  const [index, setIndex] = useState(0);
-  const [expanded, setExpanded] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // ✅ Auto slideshow every 5s
   useEffect(() => {
     if (games.length === 0) return;
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % games.length);
-      setExpanded(false); // collapse description when slide changes
-    }, 5000);
+      setActiveIndex((prev) => (prev + 1) % Math.min(games.length, 6));
+    }, 6000);
     return () => clearInterval(timer);
   }, [games.length]);
 
-  const nextSlide = () => {
-    setIndex((prev) => (prev + 1) % games.length);
-    setExpanded(false);
-  };
-  const prevSlide = () => {
-    setIndex((prev) => (prev - 1 + games.length) % games.length);
-    setExpanded(false);
-  };
+  if (loading) return (
+    <div className="loading-container">
+      <div className="spinner"></div>
+      <p className="loading-text">UNREAL ENGINE</p>
+    </div>
+  );
 
-  const game = games.length > 0 ? games[index] : null;
+  const featuredGames = games.slice(0, 6);
+  const activeGame = featuredGames[activeIndex] || featuredGames[0];
+
+  if (!activeGame && !loading) {
+    return (
+      <div className="home">
+        <div className="empty-state">
+          <h2>No games found</h2>
+          <p>Please check your database connection or seed the database.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home">
       {/* HERO SECTION */}
-      {game && (
-        <section
-          className="hero"
-          style={{
-            backgroundImage: `url(${game.banner})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            minHeight: "70vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            position: "relative",
-          }}
+      <section className="hero">
+        <div 
+          className="hero-main"
+          onClick={() => navigate(`/game/${activeGame.id}`)}
         >
-          <motion.div
-            key={game.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="hero-text"
-          >
-            <h1 className="hero-title">{game.title}</h1>
-
-            <p className="hero-detail">
-              {expanded
-                ? game.description
-                : game.description?.slice(0, 150) + "..."}
-            </p>
-            {game.description && game.description.length > 150 && (
-              <button
-                className="see-more"
-                onClick={() => setExpanded((prev) => !prev)}
-              >
-                {expanded ? "See less" : "See more"}
-              </button>
-            )}
-
-            <div className="hero-price-label">
-              {!game.price || game.price === 0 ? "Free" : `₹${game.price}`}
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={activeGame.id}
+              src={activeGame.banner || activeGame.image}
+              alt={activeGame.title}
+              className="hero-banner"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            />
+          </AnimatePresence>
+          <div className="hero-content">
+            <span className="hero-tag">Out Now</span>
+            <h1 className="hero-title-main">{activeGame.title}</h1>
+            <p className="hero-description">{activeGame.description?.slice(0, 160)}...</p>
+            <div className="hero-actions">
+              <button className="primary">Buy Now</button>
             </div>
-
-            <div className="hero-buttons">
-              <button className="primary" onClick={() => navigate(`/game/${game.id}`)}>
-                {!game.price || game.price === 0 ? "Play For Free" : `Buy Now`}
-              </button>
-              <button className="wishlist" onClick={() => {
-                addToWishlist(game);
-                toast.success(`${game.title} added to wishlist!`);
-              }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"></path>
-                </svg>
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Navigation Arrows */}
-          <div className="hero-nav">
-            <button onClick={prevSlide}><FaArrowLeft /></button>
-            <button onClick={nextSlide}><FaArrowRight /></button>
           </div>
-        </section>
-      )}
+        </div>
 
-      {/* POPULAR GAMES */}
-      <section className="game-row">
-        <h2>Popular Games</h2>
-        <div className="game-grid">
-          {games.map((g) => (
+        <div className="hero-sidebar">
+          {featuredGames.map((game, idx) => (
             <div
-              key={g.id}
-              className="game-card"
-              onClick={() => navigate(`/game/${g.id}`)}
+              key={game.id}
+              className={`hero-thumbnail ${idx === activeIndex ? "active" : ""}`}
+              onClick={() => setActiveIndex(idx)}
             >
-              <img src={g.image} alt={g.title} />
-              <div>
-                <h3>{g.title}</h3>
-                <span>{!g.price || g.price === 0 ? "Free" : `₹${g.price}`}</span>
-              </div>
+              <img src={game.image} alt={game.title} className="thumb-img" />
+              <span className="thumb-title">{game.title}</span>
+              {idx === activeIndex && <div className="thumb-progress"></div>}
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* GAMES GRID */}
+      <section className="browse-section">
+        <div className="section-header">
+          <h2 className="section-title">Games Discover</h2>
+          <button className="secondary">View More</button>
+        </div>
+        <div className="game-grid">
+          {games.map((game) => (
+            <GameCard key={game.id} game={game} />
           ))}
         </div>
       </section>

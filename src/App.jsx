@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Wishlist from "./pages/Wishlist";
 import Gift from "./pages/Gift";
+import Support from "./pages/Support";
 import Logout from "./pages/Logout";
 
 import Terms from "./pages/Terms";
@@ -21,20 +22,11 @@ import Refund from "./pages/Refund";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedAdmin from "./components/ProtectedAdmin";
 
-// ✅ Context Providers
-import { GameProvider } from "./context/GameContext";
-import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishlistContext";
-import { GiftProvider } from "./context/GiftContext";
-
 const App = () => {
   return (
-    <GameProvider>
-      <CartProvider>
-        <WishlistProvider>
-          <GiftProvider>
-            <Navbar />
-            <Routes>
+    <>
+      <Navbar />
+      <Routes>
               {/* Auth */}
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -99,6 +91,7 @@ const App = () => {
               <Route path="/logout" element={<Logout />} />
 
               {/* ✅ Policy Pages */}
+              <Route path="/support" element={<Support />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/refund" element={<Refund />} />
@@ -106,10 +99,7 @@ const App = () => {
 
             {/* ✅ Footer always visible */}
             <Footer />
-          </GiftProvider>
-        </WishlistProvider>
-      </CartProvider>
-    </GameProvider>
+    </>
   );
 };
 

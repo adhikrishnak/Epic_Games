@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import gameRoutes from "./routes/games.js";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,6 +28,8 @@ app.use((req, res, next) => {
 
 // API Routes
 app.use("/api/games", gameRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // Specific 404 for API routes to avoid falling through to index.html
 app.use("/api/*", (req, res) => {
@@ -42,7 +46,6 @@ const distPath = path.join(__dirname, "../dist");
 app.use(express.static(distPath));
 
 // Catch-all route to serve index.html for React Router
-// This MUST be after API routes
 app.get("*", (req, res) => {
     const indexPath = path.join(distPath, "index.html");
     res.sendFile(indexPath);

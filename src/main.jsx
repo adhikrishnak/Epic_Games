@@ -5,15 +5,21 @@ import App from "./App";
 import "./index.css";
 
 import { AuthProvider } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
 import { GameProvider } from "./context/GameContext";
+import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
+import { GiftProvider } from "./context/GiftContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
       <GameProvider>
         <CartProvider>
-          <App />
+          <WishlistProvider>
+            <GiftProvider>
+              <App />
+            </GiftProvider>
+          </WishlistProvider>
         </CartProvider>
       </GameProvider>
     </AuthProvider>

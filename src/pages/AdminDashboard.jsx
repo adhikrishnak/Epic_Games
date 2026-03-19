@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { GameContext } from "../context/GameContext";
+import { FaEdit, FaTrash, FaPlus, FaCloudUploadAlt } from "react-icons/fa";
 
 const AdminDashboard = () => {
   const { games, addGame, updateGame, deleteGame } = useContext(GameContext);
@@ -13,8 +14,8 @@ const AdminDashboard = () => {
     developer: "",
     publisher: "",
     release: "",
-    tags: "", // Added tags as string for input
-    rating: "", // Added rating
+    tags: "",
+    rating: "",
   });
   const [editingId, setEditingId] = useState(null);
 
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
     const isFree = String(form.price).toLowerCase() === "free" || Number(form.price) === 0;
 
     if (!form.title || (form.price === "" && form.price !== 0)) {
-      alert("Title and price are required! (Enter 0 or 'Free' for free games)");
+      alert("Title and price are required!");
       return;
     }
 
@@ -35,15 +36,12 @@ const AdminDashboard = () => {
     };
 
     if (editingId) {
-      // Update existing game
       updateGame(editingId, payload);
       setEditingId(null);
     } else {
-      // Add new game — backend generates _id
       addGame(payload);
     }
 
-    // reset form
     setForm({
       title: "",
       price: "",
@@ -64,14 +62,18 @@ const AdminDashboard = () => {
       ...game,
       tags: Array.isArray(game.tags) ? game.tags.join(", ") : "",
     });
-    setEditingId(game.id);
+    setEditingId(game._id || game.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="admin-page">
-      <h2>Admin Dashboard</h2>
+      <h1 className="hero-title-main" style={{ marginBottom: "40px" }}>
+        {editingId ? "Edit Game" : "Add New Game"}
+      </h1>
 
       <form onSubmit={handleSubmit} className="admin-form">
+        <h3>General Information</h3>
         <input
           type="text"
           placeholder="Game Title"
@@ -84,23 +86,27 @@ const AdminDashboard = () => {
           value={form.price}
           onChange={(e) => setForm({ ...form, price: e.target.value })}
         />
+        
         <input
           type="text"
-          placeholder="Image URL"
+          placeholder="Portrait Image URL (Thumbnail)"
           value={form.image}
           onChange={(e) => setForm({ ...form, image: e.target.value })}
         />
         <input
           type="text"
-          placeholder="Banner URL"
+          placeholder="Landscape Banner URL (Hero)"
           value={form.banner}
           onChange={(e) => setForm({ ...form, banner: e.target.value })}
         />
+
         <textarea
-          placeholder="Description"
+          placeholder="Game Description"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
+
+        <h3>Details & Metadata</h3>
         <input
           type="text"
           placeholder="Developer"
@@ -115,30 +121,31 @@ const AdminDashboard = () => {
         />
         <input
           type="text"
-          placeholder="Release Date"
+          placeholder="Release Date (e.g. Oct 20, 2023)"
           value={form.release}
           onChange={(e) => setForm({ ...form, release: e.target.value })}
         />
         <input
           type="text"
-          placeholder="Genre (comma separated)"
-          value={form.tags}
-          onChange={(e) => setForm({ ...form, tags: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Rating (e.g. 4.5)"
+          placeholder="Rating (0-5)"
           value={form.rating}
           onChange={(e) => setForm({ ...form, rating: e.target.value })}
         />
+        <input
+          className="full-width"
+          type="text"
+          placeholder="Genres / Tags (comma separated)"
+          value={form.tags}
+          onChange={(e) => setForm({ ...form, tags: e.target.value })}
+        />
 
-        <label>
+        <label className="checkbox-label">
           <input
             type="checkbox"
             checked={form.featured}
             onChange={(e) => setForm({ ...form, featured: e.target.checked })}
           />
-          Featured
+          Feature this game on Home Page
         </label>
 
         {form.image && (
@@ -147,20 +154,26 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <button>{editingId ? "Update Game" : "Add Game"}</button>
+        <button className="primary" type="submit">
+          {editingId ? <><FaCloudUploadAlt /> Update Game</> : <><FaPlus /> Add Game to Store</>}
+        </button>
+        {editingId && (
+          <button type="button" className="secondary" onClick={() => setEditingId(null)}>Cancel Edit</button>
+        )}
       </form>
 
+      <h2 className="section-title" style={{ marginBottom: "20px" }}>Management List ({games.length} Games)</h2>
       <div className="admin-list">
         {games.map((game) => (
-          <div key={game.id} className="admin-item">
+          <div key={game._id || game.id} className="admin-item">
             <img src={game.image} alt={game.title} className="admin-thumb" />
             <span>{game.title}</span>
-            <div>
+            <div className="admin-actions">
               <button className="secondary" onClick={() => handleEdit(game)}>
-                Edit
+                <FaEdit /> Edit
               </button>
-              <button className="admin" onClick={() => deleteGame(game.id)}>
-                Delete
+              <button className="admin-btn-delete" onClick={() => deleteGame(game._id || game.id)}>
+                <FaTrash /> Delete
               </button>
             </div>
           </div>

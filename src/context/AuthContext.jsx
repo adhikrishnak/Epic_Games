@@ -3,111 +3,131 @@ import { createContext, useState, useEffect } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // ✅ Load users from localStorage
-  const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem("users");
-    let parsed = saved ? JSON.parse(saved) : [];
-
-    // ✅ Ensure admin exists in users
-    if (!parsed.find((u) => u.email === "epicgames@epic.com")) {
-      parsed.push({
-        email: "epicgames@epic.com",
-        password: "epic123",
-        role: "admin",
-        cart: [],
-        library: [],
-        wishlist: [],
-        gifts: [],
-      });
-    }
-
-    return parsed;
-  });
-
-  // ✅ Load currentUser from localStorage
   const [currentUser, setCurrentUser] = useState(() => {
     const savedUser = localStorage.getItem("currentUser");
     return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  // ✅ Persist users
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+  const [users, setUsers] = useState([]);
 
-  // ✅ Persist currentUser
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      fetchAllUsers();
     } else {
       localStorage.removeItem("currentUser");
     }
-  }, [currentUser]);
+  }, [currentUser]); // Sync on every user state change (library, cart, etc.)
 
-  // ✅ Signup
-  const signup = (newUser) => {
-    const userWithData = {
-      ...newUser,
-      role: "user",
-      cart: [],
-      library: [],
-      wishlist: [],
-      gifts: [],
-    };
-    setUsers((prev) => [...prev, userWithData]);
-    setCurrentUser(userWithData);
-  };
-
-  // ✅ Login
-  const login = (email, password) => {
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
-    if (user) {
-      setCurrentUser(user);
-      return true;
+  // Separate effect for polling to avoid rapid interval resets
+  useEffect(() => {
+    if (currentUser) {
+      const interval = setInterval(refreshUser, 30000);
+      return () => clearInterval(interval);
     }
-    return false;
+  }, [currentUser?.email]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const resp = await fetch("/api/users");
+      if (resp.ok) {
+        const data = await resp.json();
+        setUsers(data.filter(u => u.email !== currentUser?.email));
+      }
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+    }
   };
 
-  // ✅ Logout
+  // ✅ Refresh User Data from Server
+  const refreshUser = async () => {
+    if (!currentUser || !currentUser.email) return;
+    try {
+      const resp = await fetch(`/api/users/me?email=${currentUser.email}`);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.email) {
+          setCurrentUser(data);
+        }
+      } else if (resp.status === 404) {
+        // Force logout if user no longer exists (fixes 'zombie' accounts)
+        console.warn("User not found on server. Clearing session.");
+        logout();
+      }
+    } catch (err) {
+      console.error("Failed to refresh user:", err);
+    }
+  };
+
+  const signup = async (newUser) => {
+    try {
+      const resp = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setCurrentUser(data);
+        return { success: true };
+      }
+      return { success: false, message: data.message };
+    } catch (err) {
+      return { success: false, message: "Network error" };
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const resp = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setCurrentUser(data);
+        return { success: true };
+      }
+      return { success: false, message: data.message };
+    } catch (err) {
+      return { success: false, message: "Network error" };
+    }
+  };
+
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
   };
 
-  // ✅ Update user data
-  const updateUserData = (updatedUser) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
-  };
-
-  // ✅ Remove from library
-  const removeFromLibrary = (id) => {
+  const clearNotifications = async () => {
     if (!currentUser) return;
-    const updatedLibrary = (currentUser.library || []).filter((g) => g.id !== id);
-    const updatedUser = { ...currentUser, library: updatedLibrary };
-
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
+    try {
+      const res = await fetch("/api/users/notifications/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: currentUser.email }),
+      });
+      if (res.ok) {
+        const updatedUser = { ...currentUser, notifications: [] };
+        setCurrentUser(updatedUser);
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      }
+    } catch (err) {
+      console.error("Failed to clear notifications:", err);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
-        users,
         currentUser,
-        signup,
+        users,
         login,
+        signup,
         logout,
-        updateUserData,
-        setUsers,
-        setCurrentUser,
-        removeFromLibrary,
+        refreshUser,
+        clearNotifications,
       }}
     >
       {children}

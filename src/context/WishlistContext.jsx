@@ -1,45 +1,49 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-  const { currentUser, setUsers, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, refreshUser } = useContext(AuthContext);
+  const [wishlistItems, setWishlistItems] = useState([]);
 
-  // ✅ Add to wishlist
-  const addToWishlist = (game) => {
+  useEffect(() => {
+    if (currentUser?.wishlist) {
+      setWishlistItems(currentUser.wishlist);
+    } else {
+      setWishlistItems([]);
+    }
+  }, [currentUser]);
+
+  const toggleWishlist = async (game) => {
     if (!currentUser) return;
-
-    const updatedWishlist = [...(currentUser.wishlist || []), game];
-    const updatedUser = { ...currentUser, wishlist: updatedWishlist };
-
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
+    try {
+      const resp = await fetch("/api/users/wishlist/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: currentUser.email, gameId: game._id || game.id }),
+      });
+      if (resp.ok) {
+        await refreshUser();
+      }
+    } catch (err) {
+      console.error("Wishlist error:", err);
+    }
   };
 
-  // ✅ Remove from wishlist
-  const removeFromWishlist = (id) => {
-    if (!currentUser) return;
-
-    const updatedWishlist = (currentUser.wishlist || []).filter(
-      (g) => g.id !== id
-    );
-    const updatedUser = { ...currentUser, wishlist: updatedWishlist };
-
-    setUsers((prev) =>
-      prev.map((u) => (u.email === updatedUser.email ? updatedUser : u))
-    );
-    setCurrentUser(updatedUser);
+  const isInWishlist = (id) => {
+    return wishlistItems.some((item) => {
+      const itemId = typeof item === "string" ? item : (item._id || item.id);
+      return String(itemId) === String(id);
+    });
   };
 
   return (
     <WishlistContext.Provider
       value={{
-        wishlistItems: currentUser?.wishlist || [],
-        addToWishlist,
-        removeFromWishlist,
+        wishlistItems,
+        toggleWishlist,
+        isInWishlist,
       }}
     >
       {children}
