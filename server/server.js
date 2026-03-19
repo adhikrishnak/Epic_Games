@@ -51,16 +51,19 @@ app.get("*", (req, res) => {
     res.sendFile(indexPath);
 });
 
-// Connect to MongoDB and start server
+// Connect to MongoDB
 mongoose
     .connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log("✅ MongoDB connected");
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error("❌ MongoDB connection failed:", err.message);
-        process.exit(1);
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("❌ MongoDB connection failed:", err.message));
+
+// Start server conditionally (for local development)
+// Vercel serverless functions do not use app.listen()
+if (process.env.NODE_ENV !== "production") {
+    app.listen(PORT, () => {
+        console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
+}
+
+// Export the Express API for Vercel serverless execution
+export default app;
