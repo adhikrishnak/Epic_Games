@@ -3,6 +3,13 @@ import { createContext, useState, useEffect } from "react";
 export const GameContext = createContext();
 
 const API_URL = "/api/games";
+const FALLBACK_GAMES_URL = "/games.json";
+
+const mapGames = (data) =>
+  (data || []).map((g) => ({
+    ...g,
+    id: g._id || g.id,
+  }));
 
 export const GameProvider = ({ children }) => {
   const [games, setGames] = useState(() => {
@@ -16,25 +23,38 @@ export const GameProvider = ({ children }) => {
     fetchGames();
   }, []);
 
+  const loadFallbackGames = async () => {
+    const res = await fetch(FALLBACK_GAMES_URL);
+    if (!res.ok) {
+      throw new Error(`Fallback games request failed with status ${res.status}`);
+    }
+
+    const data = await res.json();
+    const mapped = mapGames(data);
+    setGames(mapped);
+    localStorage.setItem("cached_games", JSON.stringify(mapped));
+  };
+
   const fetchGames = async () => {
     setLoading(true); // Always set loading to true while fetching for sync awareness
     try {
       const res = await fetch(API_URL);
       if (!res.ok) {
         console.error("Server returned error:", res.status);
+        await loadFallbackGames();
         return;
       }
       const data = await res.json();
-
-      // Backend already provides proper _id, map it to id for frontend compatibility
-      const mapped = (data || []).map((g) => ({
-        ...g,
-        id: g._id || g.id
-      }));
+      const mapped = mapGames(data);
       setGames(mapped);
       localStorage.setItem("cached_games", JSON.stringify(mapped));
     } catch (err) {
       console.error("Failed to fetch games from API:", err);
+      try {
+        await loadFallbackGames();
+      } catch (fallbackErr) {
+        console.error("Failed to load fallback games:", fallbackErr);
+      }
     } finally {
       setLoading(false);
     }
