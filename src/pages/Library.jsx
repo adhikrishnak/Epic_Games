@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { GameContext } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ const Library = () => {
   const { currentUser } = useContext(AuthContext);
   const { games, loading } = useContext(GameContext);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Support both populated and unpopulated library items
   const libraryItems = (currentUser?.library || []).map(item => {
@@ -17,6 +18,10 @@ const Library = () => {
     }
     return item;
   }).filter(Boolean);
+
+  const filteredLibraryItems = libraryItems.filter((game) =>
+    game.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // ONLY show full-page loading if we have LITERALLY nothing to show and are fetching
   if (loading && libraryItems.length === 0 && (currentUser?.library?.length || 0) > 0) return (
@@ -33,7 +38,12 @@ const Library = () => {
         <div className="collection-controls">
           <div className="search-bar mini">
             <FaSearch className="search-icon" />
-            <input type="text" placeholder="Search Library" />
+            <input
+              type="text"
+              placeholder="Search Library"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
           <button className="filter-btn"><FaFilter /> Filter</button>
         </div>
@@ -46,9 +56,15 @@ const Library = () => {
           <p>Your library is currently empty. Explore the store to find your next favorite game!</p>
           <button className="primary" onClick={() => navigate("/")}>Go to Store</button>
         </div>
+      ) : filteredLibraryItems.length === 0 ? (
+        <div className="empty-state">
+          <FaSearch className="empty-icon" />
+          <h2>No library matches found.</h2>
+          <p>Try a different search term to find a game in your library.</p>
+        </div>
       ) : (
         <div className="game-grid">
-          {libraryItems.map((game, index) => (
+          {filteredLibraryItems.map((game, index) => (
             <motion.div
               key={game._id || game.id}
               className="game-card library-card"

@@ -31,6 +31,24 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
+  const removeFromWishlist = async (id) => {
+    if (!currentUser || !isInWishlist(id)) return;
+
+    try {
+      const resp = await fetch("/api/users/wishlist/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: currentUser.email, gameId: id }),
+      });
+
+      if (resp.ok) {
+        await refreshUser();
+      }
+    } catch (err) {
+      console.error("Wishlist remove error:", err);
+    }
+  };
+
   const isInWishlist = (id) => {
     return wishlistItems.some((item) => {
       const itemId = typeof item === "string" ? item : (item._id || item.id);
@@ -43,6 +61,7 @@ export const WishlistProvider = ({ children }) => {
       value={{
         wishlistItems,
         toggleWishlist,
+        removeFromWishlist,
         isInWishlist,
       }}
     >

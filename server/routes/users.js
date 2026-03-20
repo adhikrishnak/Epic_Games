@@ -128,6 +128,22 @@ router.post("/gifts/add", async (req, res) => {
     }
 });
 
+// POST /api/users/gifts/remove
+router.post("/gifts/remove", async (req, res) => {
+    try {
+        const { email, gameId } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.gifts = user.gifts.filter((id) => id.toString() !== gameId);
+        await user.save();
+
+        res.json({ message: "Removed from gifts", gifts: user.gifts });
+    } catch (err) {
+        res.status(500).json({ message: "Failed to remove from gifts", error: err.message });
+    }
+});
+
 // POST /api/users/send-gift - Send a game to a friend
 router.post("/send-gift", async (req, res) => {
     console.log("🎁 GIFT ATTEMPT:", req.body);

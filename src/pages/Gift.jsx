@@ -79,7 +79,7 @@ const UserSelectionModal = ({ isOpen, onClose, game, onSend }) => {
 
 const Gift = () => {
   const { giftItems: rawGifts, removeGift } = useContext(GiftContext);
-  const { currentUser, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, refreshUser } = useContext(AuthContext);
   const { games, loading } = useContext(GameContext);
   const navigate = useNavigate();
   
@@ -120,9 +120,7 @@ const Gift = () => {
       if (resp.ok) {
         toast.success(`"${selectedGame.title}" sent to ${recipientEmail}!`);
         setIsModalOpen(false);
-        // Refresh currentUser state localy (optimistic or re-fetch)
-        const updatedGifts = (currentUser.gifts || []).filter(g => (g._id || g.id) !== (selectedGame._id || selectedGame.id));
-        setCurrentUser({ ...currentUser, gifts: updatedGifts });
+        await refreshUser();
       } else {
         const data = await resp.json();
         toast.error(data.message || "Failed to send gift");
@@ -171,9 +169,13 @@ const Gift = () => {
                   <button 
                     className="remove-btn-icon" 
                     title="Remove Gift"
-                    onClick={() => {
-                      removeGift(game._id || game.id);
-                      toast.info(`${game.title} removed from gifts`);
+                    onClick={async () => {
+                      const removed = await removeGift(game._id || game.id);
+                      if (removed) {
+                        toast.info(`${game.title} removed from gifts`);
+                      } else {
+                        toast.error(`Couldn't remove ${game.title} right now`);
+                      }
                     }}
                   >
                     <FaTrash />
